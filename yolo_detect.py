@@ -4,7 +4,7 @@ import os
 
 # Files
 cfg_file = 'yolov3-tiny-feet.cfg'                            # Your .cfg file
-weights_file = 'yolov3-tiny-feet.weights'                    # Your .weights file
+weights_file = 'yolov3-tiny-feet-2400.weights'                    # Your .weights file
 classes = ['feet']                   # Your classes file
 # classes_file = 'coco.names'
 image_directory = './feet_data/valid'                         # Input image
@@ -38,6 +38,9 @@ for image_name in os.listdir(image_directory):
         # Run a forward pass
         outs = net.forward(output_layers)
 
+        count = 0
+        feet = []
+
         for out in outs: 
             for detection in out: 
                 # Each detection has the x, y, w and h normalized (from 0 to 1) relative to the width and the height of the image
@@ -45,29 +48,47 @@ for image_name in os.listdir(image_directory):
                 class_id = np.argmax(scores) 
                 confidence = scores[class_id]
 
-                if confidence > 0.5: # Confidence threshold
-                    # Object detected
+                if confidence > 0:
+
                     center_x = int(detection[0] * width)
                     center_y = int(detection[1] * height)
                     w = int(detection[2] * width)
                     h = int(detection[3] * height)
 
-                    # Rectangle coordinates
-                    x = int(center_x - w / 2)
-                    y = int(center_y - h / 2)
+                    feet.append({'confidence': confidence, 'cx': center_x, 'cy': center_y, 'width': w, 'height': h})
 
-                    # Ensure the bounding boxes are within the bounds of the image
-                    x = max(min(x, width - 1), 0)
-                    y = max(min(y, height - 1), 0)
-                    w = min(width - x - 1, w)
-                    h = min(height - y - 1, h)
 
-                    # Draw the bounding box on the image
-                    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                    cv2.putText(image, classes[class_id], (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        if(len(feet) == 0):
+            print(image_name)
 
-        # Display the image
-        cv2.imshow("Image", image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        else:
 
+            foot = max(feet, key = lambda e: e['confidence'])
+
+
+            center_x = foot['cx']
+            center_y = foot['cy']
+            w = foot['width']
+            h = foot['height']
+            
+            # Rectangle coordinates
+            x = int(center_x - w / 2)
+            y = int(center_y - h / 2)
+
+            # Ensure the bounding boxes are within the bounds of the image
+            x = max(min(x, width - 1), 0)
+            y = max(min(y, height - 1), 0)
+            w = min(width - x - 1, w)
+            h = min(height - y - 1, h)
+
+            # Draw the bounding box on the image
+            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.putText(image, classes[class_id], (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+
+        # # Display the image
+        # cv2.imshow("Image", image)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+
+        cv2.imwrite(f"./results/{image_name}", image)
