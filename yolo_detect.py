@@ -6,7 +6,7 @@ import os
 cfg_file = 'models/cfg/yolov3-tiny-feet.cfg'                            # Your .cfg file
 weights_file = 'models/weights/yolov3-tiny-feet_final.weights'               # Your .weights file
 classes = ['feet']                                           # Your classes file
-image_directory = './feet_data/valid'                        # Input image
+image_directory = './feet_data/train'                        # Input image
 
 # with open(classes_file, 'r') as f:
 #     classes = f.read().split('\n')
@@ -47,7 +47,7 @@ for image_name in os.listdir(image_directory):
                 class_id = np.argmax(scores) 
                 confidence = scores[class_id]
 
-                if confidence > 0:
+                if confidence > 0.2:
 
                     center_x = int(detection[0] * width)
                     center_y = int(detection[1] * height)
@@ -62,13 +62,16 @@ for image_name in os.listdir(image_directory):
 
         else:
 
-            foot = max(feet, key = lambda e: e['confidence'])
+            center_x = sum(f['cx'] for f in feet) / len(feet)
+            center_y = sum(f['cy'] for f in feet) / len(feet)
+            w = sum(f['width'] for f in feet) / len(feet)
+            h = sum(f['height'] for f in feet) / len(feet)
 
-
-            center_x = foot['cx']
-            center_y = foot['cy']
-            w = foot['width']
-            h = foot['height']
+            # foot = max(feet, key = lambda e: e['confidence'])
+            # center_x = foot['cx']
+            # center_y = foot['cy']
+            # w = foot['width']
+            # h = foot['height']
             
             # Rectangle coordinates
             x = int(center_x - w / 2)
@@ -77,8 +80,8 @@ for image_name in os.listdir(image_directory):
             # Ensure the bounding boxes are within the bounds of the image
             x = max(min(x, width - 1), 0)
             y = max(min(y, height - 1), 0)
-            w = min(width - x - 1, w)
-            h = min(height - y - 1, h)
+            w = int(min(width - x - 1, w))
+            h = int(min(height - y - 1, h))
 
             # Draw the bounding box on the image
             cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
