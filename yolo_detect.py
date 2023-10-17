@@ -39,7 +39,7 @@ def detect_feet(image_file, net):
             class_id = np.argmax(scores) 
             confidence = scores[class_id]
 
-            if confidence > 0.2:
+            if confidence > 0.4:
 
                 center_x = int(detection[0] * width)
                 center_y = int(detection[1] * height)
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     
     net = load_net()
 
-    image_directory = './feet_data/valid'                        # Input image
+    image_directory = './feet_data/train'                        # Input image
 
     for image_name in os.listdir(image_directory):
 
