@@ -3,11 +3,10 @@ import numpy as np
 import os
 
 # Files
-cfg_file = 'yolov3-tiny-feet.cfg'                            # Your .cfg file
-weights_file = 'yolov3-tiny-feet-2400.weights'                    # Your .weights file
-classes = ['feet']                   # Your classes file
-# classes_file = 'coco.names'
-image_directory = './feet_data/valid'                         # Input image
+cfg_file = 'models/cfg/yolov3-tiny-feet.cfg'                            # Your .cfg file
+weights_file = 'models/weights/yolov3-tiny-feet_final.weights'               # Your .weights file
+classes = ['feet']                                           # Your classes file
+image_directory = './feet_data/valid'                        # Input image
 
 # with open(classes_file, 'r') as f:
 #     classes = f.read().split('\n')
