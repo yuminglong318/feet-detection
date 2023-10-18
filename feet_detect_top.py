@@ -95,7 +95,7 @@ if __name__ == '__main__':
     # cfg_file = 'models/cfg/yolov3-tiny-feet.cfg'                            # Your .cfg file
     # weights_file = 'models/weights/yolov3-tiny-feet_final.weights'          # Your .weights file
     
-    net = load_net(weights_file = 'yolov3-tiny-foot-top_final-4400.weights')
+    net = load_net()
 
     image_directory = './feet_data-top/train'                        # Input image
 
