@@ -3,8 +3,6 @@ import numpy as np
 import os
 from feet_detect_top import load_net, detect_feet
 
-count = 0
-
 net = load_net()
 for image_file in os.listdir('feet_data-top/train/'):
     if image_file.endswith('.jpg'):
@@ -89,5 +87,3 @@ for image_file in os.listdir('feet_data-top/train/'):
 
         cv2.imwrite(f'results-sheet/{image_file}', image)
         cv2.imwrite(f'temp/{image_file}', modified_image)
-
-        count += 1
